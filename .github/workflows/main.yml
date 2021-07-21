@@ -1,12 +1,33 @@
 name: CI
 
 on: [push]
-
 jobs:
-  build-test:
+  laravel-tests:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v2
-    - uses: php-actions/composer@v5 # or alternative dependency management
-    - uses: mokeseven7/buildphp@v2
+      - name: Checkout Repo
+      - uses: actions/checkout@v2
+      
+      - name: Copy Environment File To Build Directory
+        run: cp ~/.env ~/actions-runner/_work/apg-api/apg-api
+      
+      - name: Add HTTP basic auth credentials
+        run: echo '${{ secrets.COMPOSER_AUTH_JSON }}' > $GITHUB_WORKSPACE/auth.json
+    
+      - name: Install Dependencies (PHP vendors)
+        uses: php-actions/composer@v6
+          with:
+            dev: yes
+            args: --profile --ignore-platform-reqs
+            php_version: 7.3
+      - name: Generate Application key and JWT signing key
+        run: |
+          php artisan key:generate
+          php artisan config:cache
+
+      - name: Run Migrations (sqlite)
+        run: |
+          php artisan migrate
+
+      - name: Execute tests (Unit and Feature tests) via PHPUnit
+        run: php7.3 artisan test
