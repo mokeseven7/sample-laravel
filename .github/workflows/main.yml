@@ -7,6 +7,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       
+      - name: Install Extra Deps
+        run: |
+          sudo apt-get -y php7.3-sqlite jq 
+      
       - name: Copy Environment File To Build Directory
         run: cp .env.example .env
       
@@ -31,4 +35,4 @@ jobs:
           php artisan migrate
 
       - name: Execute tests (Unit and Feature tests) via PHPUnit
-        run: php7.3 artisan test
+        run: php7.3 artisan test --env=testing
