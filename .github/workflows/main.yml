@@ -16,10 +16,10 @@ jobs:
     
       - name: Install Dependencies (PHP vendors)
         uses: php-actions/composer@v6
-          with:
-            dev: yes
-            args: --profile --ignore-platform-reqs
-            php_version: 7.3
+        with:
+          dev: yes
+          args: --profile --ignore-platform-reqs
+          php_version: 7.3
       - name: Generate Application key and JWT signing key
         run: |
           php artisan key:generate
