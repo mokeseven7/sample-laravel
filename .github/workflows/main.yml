@@ -9,7 +9,7 @@ jobs:
       
       - name: Install Extra Deps
         run: |
-          sudo apt-get install -y php7.3-sqlite jq 
+          sudo apt-get install -y jq 
       
       - name: Copy Environment File To Build Directory
         run: cp .env.example .env
