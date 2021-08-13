@@ -23,8 +23,14 @@ jobs:
 
       - name: Deploy my app
         run: |
-          curl -X POST ${{secrets.ENVOYER_URL}} -H 'Authorization: Bearer ${{secrets.ENVOYER_TOKEN}}' \
-          -H 'Content-Type: application/json' --data-raw '{ "from": "branch", "branch": "master"}' | jq '.' > test.json
+          curl -X -o POST ${{secrets.ENVOYER_URL}} -H 'Authorization: Bearer ${{secrets.ENVOYER_TOKEN}}' \
+          -H 'Content-Type: application/json' --data-raw '{ "from": "branch", "branch": "master"}' && \
+           jq '[.deployments[] | {id: .id, created: .created_at, status}] | sort_by(.date)' > test.json && \ 
+           cat test.json
+
+     
+
+
 
       - name: Update deployment status (success)
         if: success()
@@ -35,11 +41,4 @@ jobs:
           state: "success"
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
 
-      - name: Update deployment status (failure)
-        if: failure()
-        uses: chrnorm/deployment-status@releases/v1
-        with:
-          token: "${{ github.token }}"
-          target_url: http://my-app-url.com
-          state: "failure"
-          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+
