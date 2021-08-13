@@ -24,11 +24,15 @@ jobs:
       - name: Deploy my app
         run: |
           curl -X POST ${{secrets.ENVOYER_URL}} -H 'Authorization: Bearer ${{secrets.ENVOYER_TOKEN}}' \
-          -H 'Content-Type: application/json' --data-raw '{ "from": "branch", "branch": "master"}' | jq '.deployments[]' > test.json && \
-          jq '[.deployments[] | {id: .id, created: .created_at, status}] | sort_by(.date)' test.json && \ 
-          cat test.json
+          -H 'Content-Type: application/json' --data-raw '{ "from": "branch", "branch": "master"}' && \
+          echo "Deployment Hook Hit"
 
-     
+      - name: Deploy my app
+        run: |
+          curl -X GET ${{secrets.ENVOYER_URL}} -H 'Authorization: Bearer ${{secrets.ENVOYER_TOKEN}}' -H 'Content-Type: application/json' | \
+          jq '[.deployments[] | {id: .id, created: .created_at, status}] | sort_by(.date)' response.json
+          cat response.json
+
 
 
 
