@@ -23,7 +23,7 @@ jobs:
 
       - name: Deploy my app
         run: |
-          curl -X GET ${{secrets.ENVOYER_URL}} -H 'Authorization: Bearer ${{secrets.ENVOYER_TOKEN}}
+          curl -X GET ${{secrets.ENVOYER_URL}} -H 'Authorization: Bearer ${{secrets.ENVOYER_TOKEN}}' \
           -H 'Content-Type: application/json' --data-raw '{ "from": "branch", "branch": "master"}' | jq '.' > test.json
 
       - name: Update deployment status (success)
