@@ -23,7 +23,8 @@ jobs:
 
       - name: Deploy my app
         run: |
-          # add your deployment code here
+          curl -X GET ${{secrets.ENVOYER_URL}} -H 'Authorization: Bearer 208|6lOZcSA6KcJSIjMgbOcyjQtDFoI1vKkJtTEygyvj' \
+          -H 'Content-Type: application/json' --data-raw '{ "from": "branch", "branch": "master"}' | jq '.' > test.json
 
       - name: Update deployment status (success)
         if: success()
