@@ -30,7 +30,7 @@ jobs:
         uses: chrnorm/deployment-status@releases/v1
         with:
           token: "${{ github.token }}"
-          target_url: http://my-app-url.com
+          target_url: https://stagesop.apgteam.com
           state: "success"
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
 
