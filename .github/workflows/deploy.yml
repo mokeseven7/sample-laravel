@@ -18,7 +18,7 @@ jobs:
         id: deployment
         with:
           token: "${{ github.token }}"
-          target_url: http://my-app-url.com
+          target_url: http://stagesop.apgteam.com/
           environment: production
 
       - name: Deploy my app
@@ -27,11 +27,21 @@ jobs:
           -H 'Content-Type: application/json' --data-raw '{ "from": "branch", "branch": "master"}' && \
           echo "Deployment Hook Hit"
 
-      - name: Deploy my app
+      - name: Check Status
         run: |
           curl -X GET ${{secrets.ENVOYER_URL}} -H 'Authorization: Bearer ${{secrets.ENVOYER_TOKEN}}' -H 'Content-Type: application/json' | \
-          jq '[.deployments[] | {id: .id, created: .created_at, status}] | sort_by(.date) | .[0]' > response.json
-          cat response.json
+          jq '[.deployments[] | {id: .id, created: .created_at, status}] | sort_by(.date) | .[0]' > response.json && \
+          STATUS=$(jq ".status response.json") && echo $STATUS && \
+          echo "Sleeping.." && \
+          sleep 10
+          
+      - name: Check Status
+        run: |
+          curl -X GET ${{secrets.ENVOYER_URL}} -H 'Authorization: Bearer ${{secrets.ENVOYER_TOKEN}}' -H 'Content-Type: application/json' | \
+          jq '[.deployments[] | {id: .id, created: .created_at, status}] | sort_by(.date) | .[0]' > response.json && \
+          STATUS=$(jq ".status response.json") && echo $STATUS && \
+          echo "Sleeping.." && \
+          sleep 10
 
 
 
